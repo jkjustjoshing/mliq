@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="google-site-verification" content="38AKa1W5SAx8ZUMXvMnZqD39pIY7sKgjwKSdlfChPaQ" />
+
+<link rel="stylesheet" type="text/css" href="main.css" />
+<link rel="stylesheet" href="mobile.css" type="text/css" />
+
+<script type="text/javascript">
+	//this is used by Post.class.js
+	var secondsBetweenRefreshingPermalinkTime = 5;
+</script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/helper.js"></script>
+<script type="text/javascript" src="js/main_functions.js"></script>
+<script type="text/javascript" src="js/new_post.js"></script>
+<script type="text/javascript" src="js/vote.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
+<script type="text/javascript" src="js/hash.js"></script>
+
+
+<script type="text/javascript" src="js/Post.class.js"></script>
+<script type="text/javascript" src="js/PostList.class.js"></script>
+<script type="text/javascript" src="js/PostListDOM.class.js"></script>
+<script type="text/javascript" src="js/CurrentTime.object.js"></script>
+
+<title>
+	My Life Is Quidditch
+</title>
+
+
+</head>
+<body>
+
+<div id="header">
+
+</div> <!-- id="header" -->
+
+<div id="main_content">
+	<div id="load_new_posts" onclick="postlistee.getPosts(0,0,0,0);">
+		click to load new posts
+	</div>
+	<div class="post" id="new_post">
+		<a href="#" onclick="onCreateNewForm()">Create a post...</a>
+			</div>
+	
+	
+	<div id="postContainer">
+		<div class="post" id="hh">
+			<div class="content">
+				One time I played Quidditch. It was fun. 
+				The next time I played Quidditch it was also fun. I want to play Quidditch all the time now. MLIQ
+			</div>
+			<div class="date" title="111111">
+				<a href="#permalink">
+					Yesterday at 8:43pm
+				</a>
+			</div>
+			<div class="voting">
+				Brooms up or beat this post<br />
+				15 Brooms Up!....2 Beats
+			</div>
+		</div>
+	</div>
+</div> <!-- id="main_content" -->
+
+<div id="right_content" onclick="updateTimes();">
+	Advertisements? Maybe...<br />
+	Twitter or Facebook feed? Maybe... <br />
+	We haven't really decided!!
+</div> <!-- id="right_content" -->
+
+<div id="footer">
+&copy;
+Site by Josh Kramer, John Glynn.
+Thanks to Jason Crocker, Jeff Sherman, and the rest of the RIT 
+Dark Marks for helping make this site happen!
+</div> <!-- id="footer" -->
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

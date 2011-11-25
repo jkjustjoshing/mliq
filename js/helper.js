@@ -15,8 +15,6 @@ $(document).ready(function(){
 	//setInterval(updateTimes, 120000);
 	postlistee = new PostList($('#postContainer'));
 
-	//test to see what the hash is on page load
-$(window).hashchange();
 
 });
 

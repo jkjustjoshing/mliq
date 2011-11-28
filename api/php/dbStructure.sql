@@ -1,41 +1,47 @@
 CREATE DATABASE mliq
 
-CREATE TABLE users (
-	id INTEGER NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY(id),
+CREATE TABLE IF NOT EXISTS users (
+	user_id INT NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(user_id),
 	username VARCHAR(20),
 	email VARCHAR(255),
 	-- password  --salt of 32 characters included 
-	tempPassword TINYINT(1)
-	
+	tempPassword TINYINT(1),
+	lastLogin TIMESTAMP
 	-- Possible user permissions/roles?
 );
 
-CREATE TABLE posts (
-	id INTEGER NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY(id),
-	user_id INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS posts (
+	post_id INT NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(post_id),
+	user_id INT NOT NULL,
 	date TIMESTAMP,
 	content VARCHAR(500),
 	approved TINYINT(1)
-	
 );
 
-CREATE TABLE votes (
-	post_id
-	user_id
-	value
+CREATE TABLE IF NOT EXISTS votes (
+	post_id INT,
+	user_id INT,
+	PRIMARY KEY(post_id, user_id),
+	value TINYINT(1),
+	date TIMESTAMP
 );
 
-CREATE TABLE moderation (
-	post_id
-	user_id
-	value
+CREATE TABLE IF NOT EXISTS moderation (
+	post_id INT,
+	user_id INT,
+	PRIMARY KEY(post_id, user_id),
+	value TINYINT(1),
+	date TIMESTAMP
 );
 
-CREATE TABLE comments (
-	post_id
-	user_id
-	
+CREATE TABLE IF NOT EXISTS comments (
+	comment_id INT,
+	PRIMARY KEY(comment_id),
+	post_id INT,
+	user_id INT,
+	replied_comment_id INT,
+	date TIMESTAMP
 );
 

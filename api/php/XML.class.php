@@ -6,15 +6,73 @@
 Class XML{
 	
 	//Array that holds the posts to be sent
-	var $postArr = array();
+	private $postArr = array();
 
+	//Variable that holds the logged in user
+	private $user;
+
+	//Array that holds the error code and the message
+	private $error = array();
+	
 	//Add a post to the postArr array
-	function addPost($post){
-		$This->postArr[] = $post;
+	public function addPost($post){
+		$this->postArr[] = $post;
+	}
+	
+	//Store the user
+	public function addUser($user){
+		$this->user = $user;
+	}
+	
+	//Store the error
+	public function addError($errorCode, $errorMessage){
+		$this->error[code] = $errorCode;
+		$this->error[message] = $errorMessage;
+	}
+	
+	private function postXML(){
+		$temp = '';
+		foreach($this->postArr as $post){
+			$temp .= '<post id="'.$post->getId().'" time="'.$post->getPostTime().'">';
+			$temp .= '<content>'.$post->getContent().'</content>';
+			$temp .= '<votes up="'.$post->getVoteUp().'" down="'.$post->getVoteDown().'" />';
+			$temp .= '</post>';
+		}
+		
+		return $temp;
+	}
+	
+	private function userXML(){
+		$temp = '';
+		if(isset($this->user)){
+			$temp .= '<user>';
+			
+			$temp .= '<username>'.$this->user->getUsername().'</username>';
+			
+			$temp .= '</user>';
+		}
+	}
+	
+	private function errorXML(){
+		$temp = '';
+		if(isset($this->error[code])){
+			$temp .= '<error code="'.$this->error[code].'">';
+			$temp .= $this->error[message];
+			$temp .= '</error>';
+		}
+		return $temp;
 	}
 	
 	//Returns the XML for the current data in the object
-	function getXML(){
+	public function getXML(){
 		$temp = '';
+		
+		$temp .= '<mliq timestamp="'.time().'">';
+		$temp .= $this->errorXML();
+		$temp .= $this->userXML();
+		$temp .= $this->postXML();
+		$temp .= '</mliq>';
+		
+		return $temp;
 	}
 }

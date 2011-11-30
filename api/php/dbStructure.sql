@@ -1,4 +1,6 @@
-CREATE DATABASE mliq
+CREATE DATABASE mliq;
+
+USE mliq;
 
 CREATE TABLE IF NOT EXISTS users (
 	user_id INT NOT NULL AUTO_INCREMENT,
@@ -21,8 +23,8 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 CREATE TABLE IF NOT EXISTS votes (
-	post_id INT,
-	user_id INT,
+	post_id INT NOT NULL,
+	user_id INT NOT NULL,
 	PRIMARY KEY(post_id, user_id),
 	value TINYINT(1),
 	date TIMESTAMP
@@ -37,11 +39,12 @@ CREATE TABLE IF NOT EXISTS moderation (
 );
 
 CREATE TABLE IF NOT EXISTS comments (
-	comment_id INT,
+	comment_id INT NOT NULL,
 	PRIMARY KEY(comment_id),
-	post_id INT,
-	user_id INT,
+	post_id INT NOT NULL,
+	user_id INT NOT NULL,
 	replied_comment_id INT,
+	content VARCHAR(500),
 	date TIMESTAMP
 );
 

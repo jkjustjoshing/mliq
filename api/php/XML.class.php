@@ -3,6 +3,8 @@
 * Data will be passed into it. Once all the data is put in, getXML()
 * will be called to get the formatted XML for that collection of data
 */
+<?php
+
 Class XML{
 	
 	//Array that holds the posts to be sent
@@ -76,3 +78,5 @@ Class XML{
 		return $temp;
 	}
 }
+
+?>

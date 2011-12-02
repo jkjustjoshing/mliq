@@ -54,30 +54,10 @@ Class Post{
 			$this->comments[] = $comment;
 		}
 	}
-}
-
-Class Comment{
-	private $id;
-	private $commentTime;
-	private $content;
-	private $comments = array();
 	
-	public function __construct($id = 0, $commentTime = 0, $content = ''){
-		$this->id = $id;
-		$this->commentTime = $commentTime;
-		$this->content = $content;
+	public function getComments(){
+		return $this->comments;
 	}
-	
-	public function addSubComment($comment){
-		$this->comments[] = $comment;
-	}
-	
-	public function addSubCommentArr($comments){
-		foreach($comments as $comment){
-			$this->comments[] = $comment;
-		}
-	}
-	
 }
 
 ?>

@@ -1,8 +1,6 @@
 <?php
-require_once('Post.class.php');
 
-
-Class Database{
+Class DatabaseRead{
 	
 	private $hostname;
 	private $username;
@@ -39,7 +37,7 @@ Class Database{
 		$result = $this->mysqli->query("SELECT 
 						posts.post_id, 
 						users.username,
-						UNIX_TIMESTAMP(posts.date),
+						UNIX_TIMESTAMP(posts.date) as date,
 						posts.content
 						FROM posts LEFT JOIN users ON posts.user_id = users.user_id
 						WHERE approved = 1
@@ -58,7 +56,7 @@ Class Database{
 			//strip away previous posts
 			if ($i >= $recentCount){
 				//Get data besides votes
-				$post = new Post($row->post_id, 20/*$row->date*/, $row->content);
+				$post = new Post($row->post_id, $row->date, $row->content);
 				
 				//Get votes
 		
@@ -87,8 +85,13 @@ Class Database{
 	}
 	
 	public function getComments($postId){
-		$commentQuery = $this->mysqli->query("
-						SELECT * FROM comments
+		$commentQuery = $this->mysqli->query("SELECT 
+						comment_id,
+						UNIX_TIMESTAMP(date) as date,
+						content
+						
+						
+						FROM comments
 						WHERE post_id=".$postId."
 						AND replied_comment_id=0");
 		
@@ -103,8 +106,11 @@ Class Database{
 		while($comment = $cQ->fetch_object()){
 			$commentObj = new Comment($comment->comment_id, $comment->date, $comment->content);
 
-			$query = $this->mysqli->query("
-						SELECT * FROM comments
+			$query = $this->mysqli->query("SELECT 
+						comment_id,
+						UNIX_TIMESTAMP(date) as date,
+						content
+						FROM comments
 						WHERE post_id=".$postId."
 						AND replied_comment_id=".$comment->comment_id);
 			$commentObj->addSubCommentArr(
@@ -118,11 +124,5 @@ Class Database{
 	}
 	
 }
-
-echo '<pre>';
-$foo = new Database('localhost', 'root','root','mliq');
-$bar = $foo->getPosts(0,1);
-print_r($bar);
-echo '</pre>';
 
 ?>

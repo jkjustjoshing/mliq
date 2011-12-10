@@ -48,3 +48,7 @@ CREATE TABLE IF NOT EXISTS comments (
 	date TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS sessions {
+	id VARCHAR	
+	
+);

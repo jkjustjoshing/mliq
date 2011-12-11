@@ -23,8 +23,9 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 CREATE TABLE IF NOT EXISTS votes (
-	post_id INT NOT NULL,
+	content_id INT NOT NULL,
 	user_id INT NOT NULL,
+	is_post_vote TINYINT(1) DEFAULT 1;
 	PRIMARY KEY(post_id, user_id),
 	value TINYINT(1),
 	date TIMESTAMP

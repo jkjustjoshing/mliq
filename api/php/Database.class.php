@@ -7,9 +7,10 @@ Class Database{
 	private $password;
 	private $database;
 	private $mysqli;
-	private $dbConnectSuccess;
+	static $dbConnectSuccess;
+	static $persistentMysqli;
 	
-	public function __construct($hostname = '', $username = '', $password = '', $database = ''){
+	public function __construct($hostname = 'localhost', $username = 'root', $password = 'root', $database = 'mliq'){
 		if($hostname == ''){
 			require('connection_data.php');
 		}
@@ -19,24 +20,23 @@ Class Database{
 		$this->password = $password;
 		$this->database = $database;
 		
-		$this->mysqli = new mysqli($hostname, $username, $password, $database);
-		if($this->mysqli->errno){
-			//error handling with $this->mysqli->error;
-			$this->dbConnectSuccess = false;
+		if(self::$dbConnectSuccess == true){
+			$this->mysqli = self::$persistentMysqli;
 		}else{
-			$this->dbConnectSuccess = true;
-			return true;
-		}
-		
+			$this->mysqli = new mysqli($hostname, $username, $password, $database);
+			if($this->mysqli->errno){
+				//error handling with $this->mysqli->error;
+				self::$dbConnectSuccess = false;
+			}else{
+				self::$persistentMysqli = $this->mysqli;
+				self::$dbConnectSuccess = true;
+			}
+		}			
 		//return error object if failed, return true if success
 	}
 	
 	public function successfulConnect(){
-		return $this->dbConnectSuccess;
-	}
-	
-	public function close(){
-		$this->mysqli->close();
+		return self::$dbConnectSuccess;
 	}
 	
 	public function query($query){
@@ -51,7 +51,7 @@ Class Database{
 	//zero based range, starting from most recent
 	//first number is inclusive, last isn't
 	//eg page 1 w/ 10 posts would be getPosts(0,10)
-	public function getPosts($recentCount, $distantCount){
+	public function getPosts($recentCount, $distantCount, $comments = false){
 		$result = $this->mysqli->query("SELECT 
 						posts.post_id, 
 						users.username,
@@ -61,7 +61,7 @@ Class Database{
 						WHERE approved = 1
 						ORDER BY posts.date DESC
 						LIMIT ".$distantCount);
-							
+
 		if(!$result){
 			//error handling
 			return false;
@@ -75,23 +75,52 @@ Class Database{
 			if ($i >= $recentCount){
 				//Get data besides votes
 				$post = new Post($row->post_id, $row->date, $row->content);
-				
+				$post->setUsername($row->username);
 				//Get votes
 		
 				$votes = $this->mysqli->query("SELECT
 						value, COUNT(user_id) AS count FROM votes
-						WHERE post_id=20
+						WHERE content_id=".$row->post_id." AND is_post_vote=1
 						GROUP BY value
 						");
 				
-				$votesDown = $votes->fetch_object();
-				$votesUp = $votes->fetch_object();
+				if($votesDown = $votes->fetch_object()){
+					$votesDown = $votesDown->count;
+				}else{
+					$votesDown = 0;
+				}
+				$post->setVoteDown($votesDown);
 				
-				$post->setVoteUp($votesUp->count);
-				$post->setVoteDown($votesDown->count);
+				if($votesUp = $votes->fetch_object()){
+					$votesUp = $votesUp->count;
+				}else{
+					$votesUp = 0;
+				}
+				$post->setVoteUp($votesUp);
 				
-				$post->addCommentArr($this->getComments($row->post_id));
 				
+				//Get if this user voted
+				if(isset($user->id)){
+					$userVoteQuery = $this->mysqli->query("SELECT
+							value FROM votes
+							WHERE content_id=".$row->post_id." AND is_post_vote=1
+							AND user_id=".$user->id);
+					if($userVote = $userVoteQuery->fetch_object()){
+						//User voted
+						if($userVote->value == 1){
+							$post->setUserVote(1);
+						}else{
+							$post->setUserVote(0);
+						}
+					}else{
+						//User didn't vote
+						$post->setUserVote(-1);
+					}
+				}
+				
+				//Add comments to object
+				if($comments)
+					$post->addCommentArr($this->getComments($row->post_id));
 				//Put post in the $posts array
 				$posts[] = $post;
 			}
@@ -102,87 +131,203 @@ Class Database{
 		return $posts;
 	}
 	
-	public function getComments($postId){
-		$commentQuery = $this->mysqli->query("SELECT 
-						comment_id,
-						UNIX_TIMESTAMP(date) as date,
-						content
-						
-						
-						FROM comments
-						WHERE post_id=".$postId."
-						AND replied_comment_id=0");
+	//Get one post based on id
+	public function getPost($id, $comments = true){
+		$result = $this->mysqli->query("SELECT 
+						posts.post_id, 
+						users.username,
+						UNIX_TIMESTAMP(posts.date) as date,
+						posts.content
+						FROM posts LEFT JOIN users ON posts.user_id = users.user_id
+						WHERE approved = 1
+						AND posts.post_id = ".$id."
+						LIMIT 1");
+
+		if(!$result){
+			//error handling
+			return false;
+		}
 		
-		return $this->commentFetchRecursive($commentQuery, $postId);
+		//array of posts
+		$posts = array();
 		
+		$row = $result->fetch_object();
+		$post = new Post($row->post_id, $row->date, $row->content);
+		$post->setUsername($row->username);
+		//Get votes
+
+		$votes = $this->mysqli->query("SELECT
+				value, COUNT(user_id) AS count FROM votes
+				WHERE content_id=".$row->post_id." AND is_post_vote=1
+				GROUP BY value
+				");
+		
+		if($votesDown = $votes->fetch_object()){
+			$votesDown = $votesDown->count;
+		}else{
+			$votesDown = 0;
+		}
+		$post->setVoteDown($votesDown);
+		
+		if($votesUp = $votes->fetch_object()){
+			$votesUp = $votesUp->count;
+		}else{
+			$votesUp = 0;
+		}
+		$post->setVoteUp($votesUp);
+		
+		
+		//Get if this user voted
+		if(isset($user->id)){
+			$userVoteQuery = $this->mysqli->query("SELECT
+					value FROM votes
+					WHERE content_id=".$row->post_id." AND is_post_vote=1
+					AND user_id=".$user->id);
+			if($userVote = $userVoteQuery->fetch_object()){
+				//User voted
+				if($userVote->value == 1){
+					$post->setUserVote(1);
+				}else{
+					$post->setUserVote(0);
+				}
+			}else{
+				//User didn't vote
+				$post->setUserVote(-1);
+			}
+		}
+		
+		//Add comments to object
+		if($comments)
+			$post->addCommentArr($this->getComments($row->post_id));
+		//Put post in the $posts array
+		$posts[] = $post;
+	
+	
+		//return array
+		return $posts;
 	}
 	
-	//called recursively to get all comments and subcomments of a Comment SQL 
-	//query. Returns an array of Comment objects
-	private function commentFetchRecursive($cQ, $postId){//cQ -> commentQuery
-		$commentArr = array();
-		while($comment = $cQ->fetch_object()){
-			$commentObj = new Comment($comment->comment_id, $comment->date, $comment->content);
-
-			$query = $this->mysqli->query("SELECT 
-						comment_id,
-						UNIX_TIMESTAMP(date) as date,
-						content
-						FROM comments
+	
+	//Recursively calls itself to get all the nested comments
+	public function getComments($postId, $parentCommentId = 0){
+		$commentQuery = $this->mysqli->query("SELECT 
+						comments.comment_id,
+						UNIX_TIMESTAMP(comments.date) as date,
+						comments.content, 
+						users.username
+						FROM comments LEFT JOIN users ON comments.user_id = users.user_id
 						WHERE post_id=".$postId."
-						AND replied_comment_id=".$comment->comment_id);
-			$commentObj->addSubCommentArr(
-				$this->commentFetchRecursive($query, 
-				$postId));
+						AND replied_comment_id=".$parentCommentId);
+		
+		$commentArr = array();
+		
+		while($comment = $commentQuery->fetch_object()){
+			$commentObj = new Comment($comment->comment_id, $comment->date, $comment->content);
+			$commentObj->setUsername($comment->username);
+			
+			//Get the comment's votes
+			$votes = $this->mysqli->query("SELECT
+					value, COUNT(user_id) AS count FROM votes
+					WHERE content_id=".$comment->comment_id." AND is_post_vote=0
+					GROUP BY value
+					");
+			if($votesDown = $votes->fetch_object()){
+				$votesDown = $votesDown->count;
+			}else{
+				$votesDown = 0;
+			}
+			$commentObj->setVoteDown($votesDown);
+			
+			if($votesUp = $votes->fetch_object()){
+				$votesUp = $votesUp->count;
+			}else{
+				$votesUp = 0;
+			}
+			$commentObj->setVoteUp($votesUp);
+			
+			$commentObj->addCommentArr($this->getComments($postId, $commentObj->getId()));
 			$commentArr[] = $commentObj;
 		}
 		
-		
 		return $commentArr;
+		
 	}
 	
 	
-	public function setPost($postComment){
-		//SANITIZE INPUTS!!
-		$postComment = sanitizeContent($postComment);
+	public function setPost($postContent, $user){
+		if($postContent == ''){
+			//Empty submission
+			return false;
+		}
 		
+		//SANITIZE INPUTS!!
+		$postContent = sanitize($postContent);
+		if($user->getUsername() != '-1'){
+			$result = $this->mysqli->query("INSERT
+						INTO posts(
+							user_id,
+							content,
+							approved)
+						VALUES
+							(".$user->getId().",
+							'".$postContent."',
+							1)"); //Automatically approving posts
+		}else{
+			return false;
+		}
+		if(!$result){
+			//error handling
+			return false;
+		}else{
+			return true;
+		}
+	
+	}
+	
+	public function setComment($commentObj){
+		if($postComment == ''){
+			//Empty submission
+			return false;
+		}
+		
+		//SANITIZE INPUTS!!
+		$postComment = sanitize($postComment);
 		$result = $this->mysqli->query("INSERT
 					INTO posts(
 						user_id,
-						content)
+						content,
+						approved)
 					VALUES
-						(1,
-						'".$postComment."')"); //CHANGE THIS
+						(".$user->id.",
+						'".$postComment."',
+						1)"); //Automatically approving posts
 							
 		if(!$result){
 			//error handling
 			return false;
 		}else{
-			
-			
-			
+			return true;
 		}
-	
-		//return array
-		return $post;
-	}
-	
-	public function setComment($commentObj){
-		$result = $this->mysqli->query("");
-		
-		return $comment;
 		
 	}
 	
 }
 
 
-function sanitizeContent($post){
+function sanitize($post){
 
 	$post = mysql_real_escape_string($post);
+	
+	//Allow client side sanitation - if it was sanitized, 
+	//unsanitize, then re-sanitize. This also might let users enter
+	//these characters, but that may or may not happen
+	$replace = array('&', '"', "'", '<', '>');
+	$needle = array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;');
+	$post = str_replace($needle, $replace, $post);
+	
 	$needle = array('&', '"', "'", '<', '>');
 	$replace = array('&amp;', '&quot;', '&apos;', '&lt;', '&gt;');
-	$post = str_replace($needle, $replace, $post);	
+	$post = str_replace($needle, $replace, $post);
 
 	return $post;
 }

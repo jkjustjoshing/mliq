@@ -47,9 +47,13 @@ Class XML{
 	private function postXML(){
 		$temp = '';
 		foreach($this->postArr as $post){
-			$temp .= '<post id="'.$post->getId().'" time="'.$post->getPostTime().'">';
+			$temp .= '<post id="'.$post->getId().'" time="'.$post->getTime().'">';
+			$temp .= '<user>'.$post->getUsername().'</user>';
 			$temp .= '<content>'.$post->getContent().'</content>';
-			$temp .= '<votes up="'.$post->getVoteUp().'" down="'.$post->getVoteDown().'" />';
+			$temp .= '<votes up="'.$post->getVoteUp().'" down="'.$post->getVoteDown().'"';
+			if($post->getUserVote() != -1)
+				$temp .= ' currentUser="'.($post->getUserVote() ? 'up' : 'down').'"';
+			$temp .= ' />';
 			$temp .= $this->commentXML($post);
 			$temp .= '</post>';
 		}
@@ -61,7 +65,8 @@ Class XML{
 		$str = '';
 		$commentsArr = $obj->getComments();
 		foreach($commentsArr as $comment){
-			$str .= '<comment time="'.$comment->getCommentTime().'">';
+			$str .= '<comment time="'.$comment->getTime().'">';
+			$str .= '<user>'.$comment->getUsername().'</user>';
 			$str .= '<content>'.$comment->getContent().'</content>';
 			$str .= $this->commentXML($comment);
 			$str .= '</comment>';
@@ -72,13 +77,15 @@ Class XML{
 	
 	private function userXML(){
 		$temp = '';
-		if(isset($this->user)){
+		if(isset($this->user) && $this->user->getUsername() != '-1'){
 			$temp .= '<user>';
 			
 			$temp .= '<username>'.$this->user->getUsername().'</username>';
 			
 			$temp .= '</user>';
 		}
+		
+		return $temp;
 	}
 	
 	private function errorXML(){
@@ -92,7 +99,7 @@ Class XML{
 	}
 	
 	//Returns the XML for the current data in the object
-	public function getXML(){
+	public function sendXML(){
 		$temp = '';
 		
 		$temp .= '<mliq timestamp="'.time().'">';
@@ -101,7 +108,7 @@ Class XML{
 		$temp .= $this->postXML();
 		$temp .= '</mliq>';
 		
-		return $temp;
+		echo $temp;
 	}
 }
 

@@ -1,13 +1,31 @@
 <?php
 
+/*
+	Send these values:
+		$_POST[]
+			content="My awesome post!" 
+	
+	
+*/
+
+
 	//require_once("php/required_files.php");
 	require_once("required_files.php"); //same directory as file. change according to location
 
-
-	$database = new DatabaseWrite('localhost', 'root', 'root', 'mliq');
-	$posts = $database->getPosts(0,1);
+	//Initialize objects
+	$user = new User();
+	$database = new Database();
 	$xml = new XML();
-	$xml->addPosts($posts);
+	
+	//This method currently automatically approves posts
+	if($database->setPost($_GET['content'], $user)){
+		$post = $database->getPosts(0,1);
+		$xml->addPosts($post);
+	}else{
+		$xml->addError('123', 'Post not saved. Please try again.');
+	}
+	
+	
 	$xml->sendHeaders();
-	echo $xml->getXML();
+	$xml->sendXML();
 ?>

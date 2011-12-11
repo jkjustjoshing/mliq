@@ -2,26 +2,27 @@
 
 Class Post{
 	private $id;
-	private $postTime;
+	private $username;
+	private $time;
 	private $content;
 	private $voteUp;
 	private $voteDown;
+	private $userVote;
 	private $comments = array();
 	
-	public function __construct($id = 0, $postTime = 0, $content = '', $voteUp = 0, $voteDown = 0){
+	public function __construct($id = 0, $time = 0, $content = ''){
 		$this->id = $id;
-		$this->postTime = $postTime;
+		$this->time = $time;
 		$this->content = $content;
-		$this->voteUp = $voteUp;
-		$this->voteDown = $voteDown;
+		$this->userVote = -1;
 	}
 	
 	public function getId(){
 		return $this->id;
 	}
 	
-	public function getPostTime(){
-		return $this->postTime;	
+	public function getTime(){
+		return $this->time;	
 	}
 	
 	public function getContent(){
@@ -58,6 +59,28 @@ Class Post{
 	public function getComments(){
 		return $this->comments;
 	}
+
+	
+	//1=user voted up
+	//0=user voted down
+	//-1=user didn't vote
+	public function setUserVote($value){
+		$this->userVote = $value;
+	}
+	
+	public function getUserVote(){
+		return $this->userVote;
+	}
+	
+	public function setUsername($username){
+		$this->username = $username;
+	}
+	
+	public function getUsername(){
+		return $this->username;
+	}
+	
+	
 }
 
 ?>

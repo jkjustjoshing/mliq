@@ -28,8 +28,12 @@ Class XML{
 	
 	//Add a post array to the postArr array
 	public function addPosts($postArr){
-		foreach($postArr as $post){
-			$this->postArr[] = $post;
+		if(is_array($postArr)){
+			foreach($postArr as $post){
+				$this->postArr[] = $post;
+			}
+		}else{
+			$this->postArr[] = $postArr;
 		}
 	}
 	

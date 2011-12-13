@@ -1,34 +1,52 @@
 <?php
-header("Content-type: text/xml");
 
-echo '<?xml version="1.0" ?>';
+/*
+	Inputs
+		$_GET[]
+			postCount - how many posts are there, put this alone in query
+			from=0
+			to=10   //this from and to combo would be page 1 with 10 posts
+			
+			id=1242 //this gets post id number 1242
+			
+*/
 
+	//require_once("php/required_files.php");
+	require_once("php/required_files.php"); //same directory as file. change according to location
+
+
+
+	if(isset($_GET['postCount'])){
+		$database = new Database();
+		$query = $database->query("SELECT COUNT(*) as count FROM posts");// WHERE approved=1
+		$data = $query->fetch_object();
+		echo $data->count;
+	}else{
+
+		if(isset($_GET['from'])){
+			$from = intval($_GET['from'], 10);
+			$from = $from > 0  ? $from : 0;
+		}
+		if(isset($_GET['to'])){
+			$to = intval($_GET['to'], 10);
+			$to = $to > 0  ? $to : 0;
+		}
+		if(isset($_GET['id'])){
+			$id = intval($_GET['id'], 10);
+			$id = $id > -1  ? $id : -1;
+		}
+
+		$user = new User();
+		
+		$database = new Database();
+		if(isset($_GET['id']))
+			$posts = $database->getPost($id); //true implied - want comments
+		else
+			$posts = $database->getPosts($from, $to); //getPosts(0, 1, false) implied - false for getting comments
+		$xml = new XML();
+		$xml->addPosts($posts);
+		$xml->addUser($user);
+		$xml->sendHeaders();
+		$xml->sendXML();
+	}
 ?>
-
-<mliq type="posts" sorted="chrono" timestamp="<?php echo time(); ?>">
-	<post id="12" time="<?php echo time()-20; ?>">
-		<content>
-			One time I played Quidditch. It was fun. The next time I played Quidditch it was also fun. I want to play Quidditch all the time now. MLIQ
-		</content>
-		<votes up="15" down="2" />
-	</post>
-	<post id="11" time="<?php echo time()-200; ?>">
-		<content>
-			Jason is so freaking awesome. You have no idea how awesome he is. He is so awesome that, one time, his awesomeness made him score 5 times in a row. MLIQ
-		</content>
-		<votes up="10" down="4"/>
-	</post>
-	<post id="10" time="<?php echo time()-178500; ?>">
-		<content>
-			Why does my mind think the things it does? It's really confusing, the thoughts I think. Why don't I just stop thinking, that would be much easier, wouldn't it? Yeah... MLIQ	
-		</content>
-		<votes up="10" down="20" />
-	</post>
-	<post id="9" time="<?php echo time()-2000000; ?>">
-		<content>
-			I saw someone in a yellow shirt on campus and found it weird they didn't have a sock coming out of their pants. MLIQ
-		</content>
-		<votes up="10" down="20" />
-	</post>
-</mliq>
-

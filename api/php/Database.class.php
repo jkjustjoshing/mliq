@@ -151,7 +151,9 @@ Class Database{
 		//array of posts
 		$posts = array();
 		
-		$row = $result->fetch_object();
+		if(!($row = $result->fetch_object())){
+			return false;
+		}
 		$post = new Post($row->post_id, $row->date, $row->content);
 		$post->setUsername($row->username);
 		//Get votes

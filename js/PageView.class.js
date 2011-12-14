@@ -1,33 +1,20 @@
-<<<<<<< HEAD
-function PageView(currentPageArg, containerEleArg){
-	var currentPage;
-	var containerEle;
-=======
 function PageView(containerEleArg, currentPageArg){
 	var currentPage = 1;
 	var containerEle = containerEleArg;
->>>>>>> Pagination
 	var pageNav = [];
 	var postList;
 	
 	if(currentPageArg !== undefined)
 		currentPage = currentPageArg;
-<<<<<<< HEAD
+
 	if(containerEleArg !== undefined)
 		containerEle = containerEleArg;
-	
-	//initialize stuff
-	pageNav[0] = new PageNav();
-	pageNav[1] = new PageNav();
-	postList = new PostList();
-	
-=======
-	
+
 	//initialize stuff
 	pageNav[0] = new PageNav(currentPage);
 	pageNav[1] = new PageNav(currentPage);
 	postList = new PostList();
->>>>>>> Pagination
+
 	//convert to jQuery object
 	if(!containerEle.css) 
 		containerEle = $(containerEle);
@@ -36,22 +23,15 @@ function PageView(containerEleArg, currentPageArg){
 		.append(postList.getEle())
 		.append(pageNav[1].getEle());
 	
-<<<<<<< HEAD
-=======
+
 	postList.getPosts(1);
 
->>>>>>> Pagination
+
 //Methods
-	this.getCurrentPage = function(){
-		return currentPage;
-	}
-<<<<<<< HEAD
-	
 	this.setCurrentPage = function(currentPageArg){
 		currentPage = currentPageArg;
 	}
-=======
->>>>>>> Pagination
+
 
 	this.updatePage = function(pageNumber){
 		if(pageNumber !== undefined)
@@ -73,17 +53,12 @@ function PageView(containerEleArg, currentPageArg){
 
 
 $(document).ready(function(){
-<<<<<<< HEAD
-	var pageView = new PageView(1, $('#postContainer'));
-=======
 	var pageView = new PageView('#postContainer');
 	setTimeout(function(){
 		alert('t');
-		pageView.updatePage(2);
-	}, 3000);
->>>>>>> Pagination
-});
+		pageView.updatePage(2);}, 2000);
 
+});
 /*
 
 	Paginate.go('previous'); will bring the page list to the previous page

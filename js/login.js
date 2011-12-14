@@ -60,3 +60,15 @@ function userValidate(cred, callback){
 	
 	
 }
+
+function ajax(params){
+	$.ajax({
+			type: params.type,
+			async: true,
+			cache: false,
+			url: params.url,
+			data: params.data,
+			dataType: 'xml',
+			success: params.success
+		});	
+}

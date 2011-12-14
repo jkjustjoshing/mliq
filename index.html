@@ -5,26 +5,35 @@
 <meta name="google-site-verification" content="38AKa1W5SAx8ZUMXvMnZqD39pIY7sKgjwKSdlfChPaQ" />
 
 <link rel="stylesheet" type="text/css" href="main.css" />
+<link rel="stylesheet" type="text/css" href="paginate.css" />
 <!-- link rel="stylesheet" href="mobile.css" type="text/css" / -->
+
+<!-- Include jQuery -->
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
+
 
 <script type="text/javascript">
 	//this is used by Post.class.js
 	var secondsBetweenRefreshingPermalinkTime = 5;
+	$(document).ready(function(){
+		//test to see what the hash is on page load
+		$(window).hashchange();
+
+	});
 </script>
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/helper.js"></script>
-<script type="text/javascript" src="js/main_functions.js"></script>
+
 <script type="text/javascript" src="js/new_post.js"></script>
 <script type="text/javascript" src="js/vote.js"></script>
 <script type="text/javascript" src="js/login.js"></script>
-<script type="text/javascript" src="js/jquery.ba-hashchange.js"></script>
 <script type="text/javascript" src="js/hash.js"></script>
 
 
 <script type="text/javascript" src="js/Post.class.js"></script>
 <script type="text/javascript" src="js/PostList.class.js"></script>
-<script type="text/javascript" src="js/PostListDOM.class.js"></script>
+<script type="text/javascript" src="js/PageView.class.js"></script>
 <script type="text/javascript" src="js/CurrentTime.object.js"></script>
+<script type="text/javascript" src="js/PageNav.class.js"></script>
 
 <title>
 	My Life Is Quidditch
@@ -39,34 +48,17 @@
 </div> <!-- id="header" -->
 
 <div id="main_content">
-	<div id="load_new_posts" onclick="postlistee.getPosts(0,0,0,0);">
-		click to load new posts
-	</div>
 	<div class="post" id="new_post">
 		<a href="#" onclick="onCreateNewForm()">Create a post...</a>
-			</div>
-	
+	</div>
+		
 	
 	<div id="postContainer">
-		<div class="post" id="hh">
-			<div class="content">
-				One time I played Quidditch. It was fun. 
-				The next time I played Quidditch it was also fun. I want to play Quidditch all the time now. MLIQ
-			</div>
-			<div class="date" title="111111">
-				<a href="#permalink">
-					Yesterday at 8:43pm
-				</a>
-			</div>
-			<div class="voting">
-				Brooms up or beat this post<br />
-				15 Brooms Up!....2 Beats
-			</div>
-		</div>
+		
 	</div>
 </div> <!-- id="main_content" -->
 
-<div id="right_content" onclick="updateTimes();">
+<div id="right_content">
 	Advertisements? Maybe...<br />
 	Twitter or Facebook feed? Maybe... <br />
 	We haven't really decided!!

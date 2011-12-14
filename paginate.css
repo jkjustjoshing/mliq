@@ -1,0 +1,20 @@
+.pageNumContainer{
+    width:500px;
+    margin:40px auto;
+    
+}
+
+.pageNum, .ellipsis{
+	float:left;
+	background:white;
+	-moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    padding:3px;
+    margin:5px;
+    cursor:pointer;
+}
+
+.ellipsis{
+	cursor:default;
+}

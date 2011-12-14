@@ -12,6 +12,7 @@ postlist - stores reference to each post object, adds new posts to page,
 function Post(postJQueryXML){
 
 	this.ele;
+	this.user = postJQueryXML.find('user').text();
 	this.id = postJQueryXML.attr('id');
 	this.postTime = postJQueryXML.attr('time');
 	this.content = postJQueryXML.find('content').text();
@@ -40,7 +41,8 @@ Post.prototype.constructPostEle = function(){
 	this.ele = $('<div class="post"></div>');
 	this.ele.attr('id', 'post'+this.id);
 	this.ele.append('<div class="content"></div>')
-			.append('<dive class="date"></div>')
+			.append('<div class="date"></div>')
+			.append('<div class="user"></div>')
 			.append('<div class="voting"></div>');
 	
 	//put content into element
@@ -50,6 +52,8 @@ Post.prototype.constructPostEle = function(){
 	this.ele.children('.date').append('<a></a>')
 			.children('a').attr('href', this.permalink())
 			.text(this.getTimeString());
+	
+	this.ele.children('.user').append(this.user);
 	
 	//add voting 
 	this.ele.children('.voting').text('up '+this.voteUp+', down '+this.voteDown);

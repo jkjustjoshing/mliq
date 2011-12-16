@@ -23,6 +23,7 @@ function PostList(postsPerPageArg){
 		var from = (pageNumber-1) * postsPerPage;
 		var to = from + postsPerPage;
 
+
 		postAjax(to, from, 0);
 		
 	}

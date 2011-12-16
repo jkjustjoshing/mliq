@@ -1,4 +1,11 @@
-
+<?php
+	header("Content-type: text/javascript");
+	
+	include("../api/php/Database.class.php");
+	$database = new Database();
+	$maxPage = $database->getMaxPage();
+	
+?>
 /*
 	The nav will look like:
 	
@@ -14,13 +21,32 @@
 
 function PageNav(currentPageArg){
 	var postsPerPage = 10;
-	var maxPage = 0;
+	var maxPage = <?php echo $maxPage; ?>;
 	var pause = false;
 	var currentPage = 1; //One based index!
 	if(currentPageArg !== undefined)
 		currentPage = currentPageArg;
 	this.ele = $('<div class="pageNumContainer"></div>');
+	maxPage = Math.ceil(maxPage/postsPerPage);
 	
+	this.setPage = function(page){
+		if(parseInt(page) <= maxPage){
+			currentPage = parseInt(page);
+			this.ele.empty().append(getInnerElement());
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	this.getEle = function(){
+		return this.ele;
+	
+	}
+	
+	this.getMaxPage = function(){
+		return maxPage;
+	}
 	
 	var updateMaxPages = function(callback){
 			pause = true;
@@ -44,32 +70,6 @@ function PageNav(currentPageArg){
 		postsPerPage = arg;
 	}
 	
-	this.updateCurrentPage = function(page){
-		if(parseInt(page) <= maxPage){
-			currentPage = parseInt(page);
-			this.ele.empty().append(getInnerElement());
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	this.getEle = function(){
-		if(maxPage == 0){
-			this.ele.append(getPageEle(1, 'Loading page nav...'));
-			
-			var thisObj = this;
-			updateMaxPages(function(){
-				thisObj.ele.empty().append(getInnerElement());
-			});
-			
-		}else{
-			this.ele.remove().append(getInnerElement());
-		}
-	
-		return this.ele;
-	
-	}
 	
 	var getInnerElement = function(){
 		var ele = '';

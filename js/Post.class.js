@@ -107,7 +107,7 @@ Post.prototype.getTimeString = function(){
 //this will eventually generate a link 
 //that will point to the post alone on a page
 Post.prototype.permalink = function(){
-	return '#/permalink/'+this.id;
+	return '#/post/'+this.id;
 }
 
 

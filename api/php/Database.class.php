@@ -313,6 +313,13 @@ Class Database{
 		
 	}
 	
+
+	public function getMaxPage(){
+		$query = $this->mysqli->query("SELECT COUNT(*) as count FROM posts");// WHERE approved=1
+		$data = $query->fetch_object();
+		return $data->count;
+	}
+	
 }
 
 

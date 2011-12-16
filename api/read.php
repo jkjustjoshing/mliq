@@ -18,9 +18,9 @@
 
 	if(isset($_GET['postCount'])){
 		$database = new Database();
-		$query = $database->query("SELECT COUNT(*) as count FROM posts");// WHERE approved=1
-		$data = $query->fetch_object();
-		echo $data->count;
+		echo $database->getMaxPage();
+	
+
 	}else{
 
 		if(isset($_GET['from'])){

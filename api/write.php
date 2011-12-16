@@ -16,7 +16,7 @@
 	$user = new User();
 	$database = new Database();
 	$xml = new XML();
-	
+
 	//This method currently automatically approves posts
 	if($database->setPost($_GET['content'], $user)){
 		$post = $database->getPosts(0,1);

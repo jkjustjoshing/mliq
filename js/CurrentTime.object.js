@@ -8,18 +8,19 @@ function CurrentTimeClass(){
 	this.maintainCurrentTime = function(){		
 		this.currentTime++;
 		this.secondsSinceLastServerCount++;
-		if(this.secondsSinceLastServerCount > 60){
+		if(this.secondsSinceLastServerCount > 3600){
 			this.getServerTime();
 		}
 	}
 	
 	this.getServerTime = function(){
+		this.secondsSinceLastServerCount = 0;
 		var thisObj = this;
 		$.ajax({
 			type: 'get',
 			async: true,
 			cache: false,
-			url: 'api/read.php',
+			url: 'api/read.php?time',
 			data: {},
 			dataType: 'xml',
 			success: function(data, success){

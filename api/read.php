@@ -20,7 +20,11 @@
 		$database = new Database();
 		echo $database->getMaxPage();
 	
-
+	}else if (isset($_GET['time'])){
+		$xml = new XML();
+		$xml->addUser($user);
+		$xml->sendHeaders();
+		$xml->sendXML();
 	}else{
 
 		if(isset($_GET['from'])){
@@ -43,6 +47,7 @@
 			$posts = $database->getPost($id); //true implied - want comments
 		else
 			$posts = $database->getPosts($from, $to); //getPosts(0, 1, false) implied - false for getting comments
+
 		$xml = new XML();
 		$xml->addPosts($posts);
 		$xml->addUser($user);

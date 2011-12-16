@@ -143,7 +143,7 @@ Class Database{
 						AND posts.post_id = ".$id."
 						LIMIT 1");
 
-		if(!$result){
+		if(!$result || $result->num_rows == 0){
 			//error handling
 			return false;
 		}
@@ -261,10 +261,9 @@ Class Database{
 			//Empty submission
 			return false;
 		}
-		
 		//SANITIZE INPUTS!!
 		$postContent = sanitize($postContent);
-		if($user->getUsername() != '-1'){
+		if(1){//$user->getUsername() != '-1'){
 			$result = $this->mysqli->query("INSERT
 						INTO posts(
 							user_id,
@@ -325,6 +324,11 @@ Class Database{
 
 function sanitize($post){
 
+	
+	$needle = array('\\\'', '\\\"', '\\\\');
+	$replace = array("'", '"', '\\');
+	$post = str_replace($needle, $replace, $post);
+	
 	$post = mysql_real_escape_string($post);
 	
 	//Allow client side sanitation - if it was sanitized, 

@@ -32,7 +32,7 @@ function PostList(postsPerPageArg){
 		//remove previous posts
 		posts.length = 0;
 		
-		var data = {};
+		var data = new Object();
 		if(to == 0 && from == 0)
 			data = {id:id};
 		else if(id == 0)

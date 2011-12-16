@@ -100,7 +100,7 @@ function Hash(pageViewArg){
 			return false;
 		
 		//safe, go to post page for this ID
-		
+		pageView.updateId(hashData[1]);
 	}
 	
 	

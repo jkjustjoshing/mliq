@@ -49,7 +49,18 @@ function PageView(containerEleArg, currentPageArg){
 	}
 	
 
+	this.updateId = function(id){
+		if(id === undefined){
+			window.location.hash = '#/';
+			return false;
+		}
+		
+		for(var i = 0; i < 2; i++){
+			pageNav[i].getEle().css('display', 'none');
+		}
 
+		postList.getPost(id);
+	}
 
 	//for Hash class, to tell if someone is trying to go to a non-existant page
 	this.getMaxPage = function(){

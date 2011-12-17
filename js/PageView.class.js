@@ -41,7 +41,7 @@ function PageView(containerEleArg, currentPageArg){
 		//Update both pageNav objects
 		for(var i = 0; i < 2; i++){
 			pageNav[i].setPage(this.currentPage);
-
+			pageNav[i].getEle().css('display', '');
 		}
 		
 		//update postList

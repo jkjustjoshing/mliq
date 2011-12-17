@@ -10,11 +10,10 @@
 			id=1242 //this gets post id number 1242
 			
 */
-
-	//require_once("php/required_files.php");
+	
 	require_once("php/required_files.php"); //same directory as file. change according to location
 
-
+	$user = new User();
 
 	if(isset($_GET['postCount'])){
 		$database = new Database();
@@ -45,11 +44,12 @@
 		$database = new Database();
 		if(isset($_GET['id']))
 			$posts = $database->getPost($id); //true implied - want comments
-		else
+		else if(isset($_GET['from']) && isset($_GET['to']))
 			$posts = $database->getPosts($from, $to); //getPosts(0, 1, false) implied - false for getting comments
 
 		$xml = new XML();
-		$xml->addPosts($posts);
+		if(isset($posts))
+			$xml->addPosts($posts);
 		$xml->addUser($user);
 		$xml->sendHeaders();
 		$xml->sendXML();

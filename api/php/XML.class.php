@@ -16,7 +16,7 @@ Class XML{
 	
 	public function sendHeaders(){
 		if(!$this->sentXMLheader){
-			header("Content-type: text/xml");
+			header("Content-type: application/xml");
 			echo '<?xml version="1.0" ?>';
 		}
 	}

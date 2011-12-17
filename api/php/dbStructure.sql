@@ -7,11 +7,20 @@ CREATE TABLE IF NOT EXISTS users (
 	PRIMARY KEY(user_id),
 	username VARCHAR(20),
 	email VARCHAR(255),
-	-- password  --salt of 32 characters included 
-	tempPassword TINYINT(1),
-	lastLogin TIMESTAMP
-	-- Possible user permissions/roles?
+	password CHAR(128) --salt included 
+	tempPassword TINYINT(1) DEFAULT '0',
+	lastAttempt TIME,
+	lastLogin TIMESTAMP,
 );
+
+CREATE TABLE IF NOT EXISTS phones (
+	phone_id INT NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(phone_id),
+	user_id INT,
+	confirmationCode CHAR(5),
+	confirmed TINYINT(1)
+);
+
 
 CREATE TABLE IF NOT EXISTS posts (
 	post_id INT NOT NULL AUTO_INCREMENT,

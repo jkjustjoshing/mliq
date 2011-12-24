@@ -1,3 +1,7 @@
+@import url('main_content.css');
+@import url('paginate.css');
+@import url('header.css');
+
 body {
 	background: #3C5675; /*rgb(23, 41, 63);/ *#DB7E40;*/
 }
@@ -15,16 +19,12 @@ a:hover {
 	text-decoration:underline;
 }
 
-#main_content {
-	float:left;
-	width: 55%
-}
-
 #right_content {
 	float:left;
 	width:25%;
 	border:1px solid black;
 	background: rgb(251, 128, 9);
+	display:none;
 }
 
 #footer {
@@ -37,39 +37,6 @@ a:hover {
 	padding:3px 10px;
 	background:#261E1E;
 	color:white;
-}
-
-.post{
-	color: #261E1E;
-	padding:15px;
-	background:rgb(251,251,255); /*#A85E45;*/
-	border-color:#593733;
-	-moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    -khtml-border-radius: 20px;
-    border-radius: 20px;
-    margin:20px 5px;
-}
-
-.content {
-	font-size:13pt;
-}
-
-.user {
-	float:left;
-	font-size:9pt;
-}
-
-.date {
-	float:left;
-	margin:0 4px 0 0;
-	font-size:9pt;
-}
-
-.voting {
-	clear:both;
-	size:20pt;
-	font-size:9pt;
 }
 
 #new_post {

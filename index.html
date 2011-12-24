@@ -4,8 +4,8 @@
 <head>
 <meta name="google-site-verification" content="38AKa1W5SAx8ZUMXvMnZqD39pIY7sKgjwKSdlfChPaQ" />
 
-<link rel="stylesheet" type="text/css" href="main.css" />
-<link rel="stylesheet" type="text/css" href="paginate.css" />
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+
 <!-- link rel="stylesheet" href="mobile.css" type="text/css" / -->
 
 <!-- Include jQuery -->
@@ -16,6 +16,7 @@
 	//this is used by Post.class.js
 	var secondsBetweenRefreshingPermalinkTime = 5;
 
+	
 </script>
 
 <script type="text/javascript" src="js/new_post.js"></script>
@@ -40,10 +41,44 @@
 <body>
 
 <div id="header">
-
+	<div style="width:250px;height:80px;background:grey;margin:0 0 10px 0;">
+		MLIQ Logo
+	</div>
+	
+	<div id="globalNav">
+		<div>
+			<a href="#/">
+				Main Pitch
+			</a>
+		</div>
+		<div>
+			<a href="javascript://">
+				Login
+			</a>
+		</div>
+		<div>
+			<a href="#/about">
+				About
+			</a>
+		</div>
+		<div>
+			<a href="#/advertise">
+				Advertise
+			</a>
+		</div>
+		<div style="clear:both;background:none;">heo</div>
+	</div>
 </div> <!-- id="header" -->
 
 <div id="main_content">
+
+<!-- <div id="login">
+	<input type="text" value="username" id="username"  />
+	<input type="text" value="password" id="password" />
+	<div onclick="login(this)">Submit</div>
+</div>
+-->
+
 	
 	<div id="postContainer">
 		

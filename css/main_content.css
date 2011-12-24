@@ -1,0 +1,39 @@
+#main_content {
+	float:left;
+	width: 55%
+    margin:0px 5px;
+}
+
+
+.post{
+	color: #261E1E;
+	padding:15px;
+	background:rgb(251,251,255); /*#A85E45;*/
+	border-color:#593733;
+	-moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+    margin:20px 0px;
+}
+
+.content {
+	font-size:13pt;
+}
+
+.user {
+	float:left;
+	font-size:9pt;
+}
+
+.date {
+	float:left;
+	margin:0 4px 0 0;
+	font-size:9pt;
+}
+
+.voting {
+	clear:both;
+	size:20pt;
+	font-size:9pt;
+}

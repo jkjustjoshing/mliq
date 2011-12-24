@@ -1,0 +1,20 @@
+#header {
+	width:100%;
+}
+
+#globalNav {
+	background: rgb(251, 128, 9);
+	width:55%;
+	height
+	border:2px solid red;
+}
+
+#globalNav div {
+	float:left;
+	padding:2px 30px;
+	background: rgb(251, 128, 9);
+}
+
+#globalNav div a {
+	color:black;
+}

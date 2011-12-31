@@ -1,20 +1,49 @@
 #header {
 	width:100%;
+	margin-top:0px;
+	position:fixed;
+	left:0px;
+	top:0px;
+	width:100%;
+	background:black;
+
 }
 
 #globalNav {
-	background: rgb(251, 128, 9);
-	width:55%;
-	height
-	border:2px solid red;
+	width:100%;
+	margin-top:0px;
+	display:inline;
 }
 
-#globalNav div {
+#globalNav li {
+	display:block;
 	float:left;
-	padding:2px 30px;
-	background: rgb(251, 128, 9);
+	padding:2px 20px;
+	width:100px;
 }
 
-#globalNav div a {
-	color:black;
+#loginWindow form, #user div {
+	margin-top:0px;
+	padding:10px;
+	background:black;
+	width:250px;
+	position:fixed;
+	right:0px;
+	display:none;
+}
+
+#loginWindow {
+	display:none;
+	float:right;
+}
+
+#user {
+	display:inline;
+	float:right;
+	display:none;
+}
+
+.error_message {
+	color:red;
+	opacity:0;
 }

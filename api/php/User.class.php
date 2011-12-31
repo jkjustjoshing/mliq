@@ -129,18 +129,17 @@ Class User{
 			return false;
 			
 		$data = $results->fetch_object();
-		
 		if(strtotime($data->lastAttempt)+1 >= time())
 			//last login attempt was less than 2 seconds ago - fail
 			return false;
 		else
 			//update last attempted login time
-			$database->query("
+			$foo = $database->query("
 				UPDATE users
 				SET lastAttempt=NOW()
 				WHERE user_id=".$data->user_id."
 			");
-		
+
 		if($this->checkPassword($password, $data->password)){
 			//user is validated!
 			//merge anonymous and logged in records
@@ -187,12 +186,10 @@ Class User{
 	}
 	
 	public function newUser($username, $password, $email, $phone=null){
-		if(!$this->validUsername($username) == 1)
+	if(!$this->validUsername($username) == 1)
 			return false;
-		
 		if(strlen($password) < 6)
 			return false;
-		
 		if($this->username != '-1') //you're already logged in!
 			return false;
 			
@@ -201,7 +198,6 @@ Class User{
 		$this->updateEmail($email);
 		//if($phone !== null)
 			//$this->updatePhone()
-		
 		
 	}
 	

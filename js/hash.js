@@ -1,18 +1,3 @@
-var hash;
-
-$(window).hashchange(function(){
-	hash.hashUpdate();
-});
-
-$(document).ready(function(){
-	var pageView = new PageView('#postContainer');
-	
-	hash = new Hash(pageView);
-	
-	$(window).hashchange();
-	
-});
-
 /*
 Hashes will have the form
 mylifeisquidditch.com/#/page/data(/sorting)
@@ -32,9 +17,11 @@ sorting
 function Hash(pageViewArg){
 	var hashData;
 	var pageView = pageViewArg;
+	var hashHistory = [];
 	
 	this.hashUpdate = function(){
 		//called on every hash change
+		hashHistory.push(window.location.hash);
 		
 		hashData = parseHash();
 		if(!hashData)
@@ -44,6 +31,10 @@ function Hash(pageViewArg){
 		
 	}
 	
+	this.back = function(){
+		if(hashHistory.length > 1)
+			window.location.hash = hashHistory[hashHistory.length-2];
+	}
 	
 	var parseHash = function(){
 		//if the first slash was forgotten, add it
@@ -54,17 +45,24 @@ function Hash(pageViewArg){
 		
 		//split data into array (after chopping off again the first slash)
 		var hashData = window.location.hash.slice(2).split('/');
-
-		if(hashData[1] === undefined){
+		
+		if(hashData[0] == ''){
 			hashData[0] = 'page';
 			hashData[1] = '1';
 		}
+		
 		return hashData;
 	}
 
 	
 	var selectCommand = function(){
 		var returnVal;
+		
+		//reset page
+		if(hashData[0] != 'login')
+			login('hide')
+		
+		
 		//do stuff with the data
 		switch(hashData[0]){
 			case 'post':
@@ -78,6 +76,9 @@ function Hash(pageViewArg){
 				break;
 			case 'user':
 				returnVal = user();
+				break;
+			case 'login':
+				returnVal = login();
 				break;
 			default:
 				//page type wasn't found
@@ -93,14 +94,18 @@ function Hash(pageViewArg){
 		
 	}
 		
-	var post = function(){
-		if(hashData[2] !== undefined)
-			return false;
-		if(!validatePositiveNumber(hashData[1]))
-			return false;
+	var post = function(hide){
+		if(hide !== undefined){
 		
-		//safe, go to post page for this ID
-		pageView.updateId(hashData[1]);
+		} else {
+			if(hashData[2] !== undefined)
+				return false;
+			if(!validatePositiveNumber(hashData[1]))
+				return false;
+			
+			//safe, go to post page for this ID
+			pageView.updateId(hashData[1]);
+		}
 	}
 	
 	
@@ -115,6 +120,24 @@ function Hash(pageViewArg){
 		//safe, go to proper page
 		pageView.updatePage(hashData[1]);
 	
+	}
+	
+	var login = function(hide){
+		if(hide !== undefined){
+			window.user.loginWindow('hide');
+		} else {
+			if(hashData[1] !== undefined)
+				return false;
+			/*
+				if the page is just loading, let the User()
+				object show it
+			*/
+			if(!window.user.isLoggedIn()){
+				window.user.loginWindow('show');
+			}else{
+				window.location.hash = '#/user/'+window.user.getUsername();
+			}	
+		}
 	}
 	
 	

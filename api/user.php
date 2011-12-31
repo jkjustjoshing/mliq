@@ -35,14 +35,12 @@
 		
 	}else if(isset($_GET['login'])){		
 	
-		if(!isset($_POST['username']) || !isset($_POST['password']) )
-			return false;
-		if($_POST['username'] == '' || $_POST['password'] == '')
-			return false;
+		if(isset($_POST['username']) && isset($_POST['password']) ){
+			if($_POST['username'] != '' & $_POST['password'] != ''){
+				$user->checkCredentials($_POST['username'], $_POST['password']);
+			}
+		}
 		
-		$user->checkCredentials($_POST['username'], $_POST['password']);	
-	
-	
 	}else if(isset($_GET['logout'])){
 	
 		$user->logout();
@@ -58,7 +56,7 @@
 			$_POST['phone'] = null;
 		
 		$user->newUser($_POST['username'],$_POST['password'],$_POST['email'],$_POST['phone']);
-	
+		
 	}else if(isset($_GET['edit'])){
 
 

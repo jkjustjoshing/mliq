@@ -19,10 +19,10 @@
 	
 </script>
 
-<script type="text/javascript" src="js/new_post.js"></script>
 <script type="text/javascript" src="js/vote.js"></script>
-<script type="text/javascript" src="js/login.js"></script>
 <script type="text/javascript" src="js/hash.js"></script>
+<script type="text/javascript" src="js/createNewAccountEle.js"></script>
+<script type="text/javascript" src="js/createPostEle.js"></script>
 
 
 <script type="text/javascript" src="js/Post.class.js"></script>
@@ -32,10 +32,10 @@
 <script type="text/javascript" src="js/CurrentTime.object.js"></script>
 <script type="text/javascript" src="js/PageNav.class.js.php"></script>
 <script type="text/javascript" src="js/global.js.php"></script>
-
-
+<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+ 
 <title>
-	My Life Is Quidditch
+	MLIQ - My Life is Quidditch
 </title>
 
 
@@ -44,22 +44,12 @@
 
 <div id="header">
 	<ul id="globalNav">
-		<li>
-			<a href="#/">
-				Main Pitch
-			</a>
-		</li>
-		<li>
-			<a href="#/about">
-				About
-			</a>
-		</li>
-		<li>
-			<a href="#/advertise">
-				Advertise
-			</a>
-		</li>
+		<li><a href="#/">Main Pitch</a></li>
+		<li><a href="#/about">About</a></li>
+		<li><a href="#/advertise">Advertise</a></li>
+		<li><a href="#/createPost">Create a Post</a></li>
 	</ul>
+	
 	<div id="loginWindow">
 		<a href="#/login">
 			Login
@@ -81,23 +71,31 @@
 		</form>
 		
 	</div>
-	<div id="user"></div>
+	<div id="user">
+		<a href="javascript://">Not Logged In</a>
+		<div style="display:none;" id="userDropdown">
+				<div>
+					<a href="javascript://" onclick="
+						window.location.hash = '#/user/'+window.user.getUsername();
+					">
+						Your profile
+					</a>
+				</div>
+				<div>
+					<a href="javascript://" onclick="window.user.logout();">
+						Sign out
+					</a>
+				</div>
+		</div>
+	</div>
 	
 </div> <!-- id="header" -->
 
 <div id="main_content">
-
-<!-- <div id="login">
-	<input type="text" value="username" id="username"  />
-	<input type="text" value="password" id="password" />
-	<div onclick="login(this)">Submit</div>
-</div>
--->
-
 	
 	<div id="postContainer">
-		
 	</div>
+
 </div> <!-- id="main_content" -->
 
 <div id="right_content">
@@ -108,7 +106,7 @@
 
 <div id="footer">
 &copy;
-Site by Josh Kramer, John Glynn.
+Site by Josh Kramer.
 Thanks to Jason Crocker, Jeff Sherman, and the rest of the RIT 
 Dark Marks for helping make this site happen!
 </div> <!-- id="footer" -->

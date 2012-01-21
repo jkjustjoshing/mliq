@@ -2,8 +2,12 @@
 	float:left;
 	width: 55%
     margin:0px 5px;
+    
 }
 
+#postContainer {
+	padding:20px 0px;
+}
 
 .post{
 	color: #261E1E;
@@ -36,4 +40,19 @@
 	clear:both;
 	size:20pt;
 	font-size:9pt;
+}
+
+.voting .upText, .voting .downText {
+	padding-left:3px;
+	padding-right:15px;
+}
+
+.voting span.upLink, .voting span.downLink {
+	font-weight:bold;
+}
+
+.error_message {
+	color:red;
+	opacity:0;
+	float:left;
 }

@@ -1,32 +1,60 @@
 function User(override, usernameArg){
 	var username = null;
+	var postList = null;
 
-	this.loginWindow = function(type, usernameArg){
+	var userDropdown = function(){
+		//If this function hasn't been called yet
+		$('#loginWindow').hide();
+		$('#user').css('display', 'inline');
+		$('#userDropdown').css('display', 'none');
+		if($('#user > a').text() != username){
+			$('#user > a').text(username)
+				.click(function(){
+					if($('#userDropdown').css('display') == 'none'){
+						$('#userDropdown').css('display', 'block');	
+					}else{
+						$('#userDropdown').css('display', 'none');
+					}
+				});
+		}
+	}
+
+	this.loginWindow = function(type, error){
 		if(type == 'show' && username == null){
 			$('#loginWindow form').css('display', 'block');
+			$('#loginWindow > a').attr('href', 'javascript:window.hash.back()');
+			if(error !== undefined)
+				this.loginWindowError(error);
 		} else if (type == 'hide'){
-			$('#loginWindow form').css('display', 'none');
+			$('#loginWindow > a').attr('href', '#/login');
+			$('#loginWindow form').hide();
 			$('#loginWindow form').children('.username').val('');
 			$('#loginWindow form').children('.password').val('');
-			
-			if(usernameArg !== undefined){
-				username = usernameArg;
-				$('#user').append('<a></a>').children('a')
-					.attr('href', '#/user/'+username).text(username);
-				window.hash.back();
-			}
-			
 			if(username !== null){
-				//display username with a "settings" and a "logout" button
-				$('#loginWindow').css('display', 'none');
-				$('#user').css('display', 'inline');
+				userDropdown();
 			}
+			
+		} else {
+			window.location.hash = '#/user/'+window.user.getUsername();
+			return;
+		}
+	}
+	
+	this.loginWindowError = function(error){
+		if($('#loginWindow form').css('display') == 'block'){
+			var text = $('#loginWindow form').children('.error_message').text();
+			$('#loginWindow form').children('.error_message').text(error);
+			$('#loginWindow form').children('.error_message').css('opacity', '1.0').delay(1000).animate({ opacity: 0 }, {complete:function(){
+					$('#loginWindow form').children('.error_message').text(text)
+				}
+			});
 		}
 	}
 	
 	//Initialize
 	if(override == 'override'){
-		this.loginWindow('hide', usernameArg);
+		username = usernameArg
+		this.loginWindow('hide');
 	} else {
 		$.ajax({
 			type: 'get',
@@ -46,6 +74,7 @@ function User(override, usernameArg){
 	
 	this.login = function(usernameArg, passwordArg){
 		//check to see if user is logged in
+		thisObj = this;
 		$.ajax({
 			type: 'post',
 			async: true,
@@ -55,7 +84,8 @@ function User(override, usernameArg){
 			dataType: 'xml',
 			success: function(data, success){
 				if($(data).find('username').text() == usernameArg){
-					window.user.loginWindow('hide', usernameArg);
+					username = usernameArg
+					window.hash.back();
 				} else {
 					//do something to show unsuccessful login
 					$('#loginWindow form').children('.error_message').css('opacity', '1.0').delay(1000).animate({ opacity: 0 });
@@ -75,7 +105,8 @@ function User(override, usernameArg){
 				if(!$(data).find('user').find('username').text()){
 					username = null;
 					$('#loginWindow').css('display', 'inline');
-					$('#user').css('display', 'none').empty();
+					$('#user').css('display', 'none');
+					window.hash.hashUpdate();
 					
 				}
 			}
@@ -97,4 +128,15 @@ function User(override, usernameArg){
 	this.getUsername = function(){
 		return username;
 	}
+	
+	this.userProfile = function(){
+		var ele = $('<div></div>');
+		postList = new PostList();
+		
+		ele.append(postList.getEle());
+		postList.getPosts(username);
+		
+		return ele.html();
+	}
+	
 }

@@ -32,11 +32,10 @@ $(document).ready(function(){
 	if($username == '-1'){
 		//logged in
 		echo '$("#loginWindow").css("display", "inline");';
-		echo '$("#user").css("display", "none");';
+		echo '$("#user").hide();';
 	} else {
-		echo '$("#loginWindow").css("display", "none");';
-		echo '$("#user").css("display", "inline")
-				.children("a").attr("href", "#/user/'.$username.'").text("'.$username.'");';
+		echo '$("#loginWindow").hide();';
+		echo '$("#user").css("display", "inline");';
 		
 	}
 		
@@ -44,3 +43,45 @@ $(document).ready(function(){
 ?>
 	
 });
+
+
+function popupWindow(ele){
+	var blackoutDiv = $('<div class="blackoutDiv"></div>');
+	
+	$('body').click(function(){
+		$('body').unbind('click');
+		blackoutDiv.remove();
+		ele.remove();
+		window.hash.back();
+	});
+	
+	if(!ele.css)
+		ele = $(ele);
+	
+	ele.css({
+		'position':'absolute',
+		'top':'30px',
+		'left':'25%',
+		'width':'50%',
+		'min-width':'400px'
+	});
+	ele.bind('click', function(){}, false);	
+	$('body').append(blackoutDiv);
+		blackoutDiv.after(ele);
+
+}
+
+jQuery.fn.isChildOf = function(b){ 
+    return (this.parents(b).length > 0); 
+};
+
+//Used in Post->voting
+jQuery.fn.swap = function(b){ 
+    b = jQuery(b)[0]; 
+    var a = this[0]; 
+    var t = a.parentNode.insertBefore(document.createTextNode(''), a); 
+    b.parentNode.insertBefore(a, b); 
+    t.parentNode.insertBefore(b, t); 
+    t.parentNode.removeChild(t); 
+    return this; 
+};

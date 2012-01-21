@@ -43,6 +43,10 @@ Class Database{
 		return $this->mysqli->query($query);
 	}
 	
+	public function real_escape_string($string){
+		return $this->mysqli->real_escape_string($string);
+	}
+	
 	public function checkUser($username, $password){
 		//check the username and password. return error object if failed, 
 		//return user object if success 
@@ -52,16 +56,31 @@ Class Database{
 	//first number is inclusive, last isn't
 	//eg page 1 w/ 10 posts would be getPosts(0,10)
 	public function getPosts($recentCount, $distantCount, $comments = false){
-		$result = $this->mysqli->query("SELECT 
-						posts.post_id, 
-						users.username,
-						UNIX_TIMESTAMP(posts.date) as date,
-						posts.content
-						FROM posts LEFT JOIN users ON posts.user_id = users.user_id
-						WHERE approved = 1
-						ORDER BY posts.date DESC
-						LIMIT ".$distantCount);
-
+		if(is_string($recentCount)){
+			$username = $recentCount;
+			$recentCount = 0;
+			
+		
+			$result = $this->mysqli->query("SELECT 
+							posts.post_id, 
+							users.username,
+							UNIX_TIMESTAMP(posts.date) as date,
+							posts.content
+							FROM posts LEFT JOIN users ON posts.user_id = users.user_id
+							WHERE approved = 1 AND users.username = '".$username."'
+							ORDER BY posts.date DESC");
+		} else {					
+			$result = $this->mysqli->query("SELECT 
+							posts.post_id, 
+							users.username,
+							UNIX_TIMESTAMP(posts.date) as date,
+							posts.content
+							FROM posts LEFT JOIN users ON posts.user_id = users.user_id
+							WHERE approved = 1
+							ORDER BY posts.date DESC
+							LIMIT ".$distantCount);
+		}
+		
 		if(!$result){
 			//error handling
 			return false;
@@ -84,21 +103,15 @@ Class Database{
 						GROUP BY value
 						");
 				
-				if($votesDown = $votes->fetch_object()){
-					$votesDown = $votesDown->count;
-				}else{
-					$votesDown = 0;
+				$post->setVoteUp(0);
+				$post->setVoteDown(0);
+				while($voteResults = $votes->fetch_object()){
+					if($voteResults->value) //votes up
+						$post->setVoteUp($voteResults->count);
+					else //votes down
+						$post->setVoteDown($voteResults->count);
 				}
-				$post->setVoteDown($votesDown);
-				
-				if($votesUp = $votes->fetch_object()){
-					$votesUp = $votesUp->count;
-				}else{
-					$votesUp = 0;
-				}
-				$post->setVoteUp($votesUp);
-				
-				
+
 				//Get if this user voted
 				if(isset($user->id)){
 					$userVoteQuery = $this->mysqli->query("SELECT
@@ -164,20 +177,14 @@ Class Database{
 				GROUP BY value
 				");
 		
-		if($votesDown = $votes->fetch_object()){
-			$votesDown = $votesDown->count;
-		}else{
-			$votesDown = 0;
+		$post->setVoteUp(0);
+		$post->setVoteDown(0);
+		while($voteResults = $votes->fetch_object()){
+			if($voteResults->value) //votes up
+				$post->setVoteUp($voteResults->count);
+			else //votes down
+				$post->setVoteDown($voteResults->count);
 		}
-		$post->setVoteDown($votesDown);
-		
-		if($votesUp = $votes->fetch_object()){
-			$votesUp = $votesUp->count;
-		}else{
-			$votesUp = 0;
-		}
-		$post->setVoteUp($votesUp);
-		
 		
 		//Get if this user voted
 		if(isset($user->id)){
@@ -201,12 +208,10 @@ Class Database{
 		//Add comments to object
 		if($comments)
 			$post->addCommentArr($this->getComments($row->post_id));
-		//Put post in the $posts array
-		$posts[] = $post;
-	
+		//Put post in the $posts array	
 	
 		//return array
-		return $posts;
+		return $post;
 	}
 	
 	
@@ -259,11 +264,12 @@ Class Database{
 	public function setPost($postContent, $user){
 		if($postContent == ''){
 			//Empty submission
-			return false;
+			return -1;
 		}
+
 		//SANITIZE INPUTS!!
 		$postContent = sanitize($postContent);
-		if(1){//$user->getUsername() != '-1'){
+		if($user->getUsername() != '-1'){
 			$result = $this->mysqli->query("INSERT
 						INTO posts(
 							user_id,
@@ -274,13 +280,13 @@ Class Database{
 							'".$postContent."',
 							1)"); //Automatically approving posts
 		}else{
-			return false;
+			return -2;
 		}
 		if(!$result){
 			//error handling
-			return false;
+			return -3;
 		}else{
-			return true;
+			return 1;
 		}
 	
 	}

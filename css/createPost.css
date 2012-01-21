@@ -1,0 +1,37 @@
+textarea {
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-width:0;
+	height:100px;
+	width: 90%;
+	margin-top:8px;
+}
+
+div.textarea {
+	margin:10px 20px;
+}
+
+#createPostTitle {
+	width:100%;
+	background:green;
+}
+
+#recaptcha_div {
+	margin:10px 20px;
+}
+
+#createPost{
+	background:blue;
+	padding-bottom:10px;
+}
+
+#createPost div.button {
+	margin: 3px 20px;
+	float:left;
+}
+
+#createPost .error_message {
+	float:right;
+	padding:3px 5px;
+}

@@ -16,6 +16,7 @@ Class User{
 
 	private $username;
 	private $id;
+	static $votes = null;
 	
 	public function __construct(){
 		$this->callConstructor();
@@ -69,7 +70,7 @@ Class User{
 			//Put their username into the database
 			$database->query("
 				UPDATE users
-				SET username='".mysql_real_escape_string($username)."'
+				SET username='".$database->real_escape_string($username)."'
 				WHERE user_id=".$this->id."
 			");
 			
@@ -81,7 +82,7 @@ Class User{
 	
 	public function updateEmail($email){
 		//check to see if it already exists and conforms to formatting
-		if(preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i', $username) == 0)
+		if(preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i', $email) == 0)
 			return -3;
 		
 		
@@ -99,7 +100,7 @@ Class User{
 		//Put their email into the database
 		$database->query("
 			UPDATE users
-			SET email='".mysql_real_escape_string($email)."'
+			SET email='".$database->real_escape_string($email)."'
 			WHERE user_id=".$this->id."
 		");
 		
@@ -108,15 +109,16 @@ Class User{
 	}
 	
 	public function checkCredentials($username, $password){
+
 		if($username == '-1' || $this->username != '-1')
 			return false;
 		
-		$username = mysql_real_escape_string($username);
+		$database = new Database();
+		$username = $database->real_escape_string($username);
 		/*
 			Password will be hashed before entering database
 			therefore no need to escape
 		*/
-		
 		
 		$database = new Database();
 		$results = $database->query("
@@ -124,12 +126,13 @@ Class User{
 			FROM users
 			WHERE username='".$username."'
 		");
-		
+
 		if($results->num_rows == 0)
 			return false;
-			
+
 		$data = $results->fetch_object();
-		if(strtotime($data->lastAttempt)+1 >= time())
+
+		if(strtotime($data->lastAttempt)+1 >= time() && strtotime($data->lastAttempt)<=time())
 			//last login attempt was less than 2 seconds ago - fail
 			return false;
 		else
@@ -205,10 +208,10 @@ Class User{
 		
 		
 		$salt = substr($fromDB, 64);
-		$hash = substr($fromDBd, 0, 64);
+		$hash = substr($fromDB, 0, 64);
 		//get a last attempted login time, only allow relogin one second after
 		$check = hash("sha256", $password.$salt).$salt;
-	
+		
 		if($fromDB == $check)
 			return true;
 		else
@@ -217,7 +220,8 @@ Class User{
 	}
 	
 	private function callConstructor(){
-		session_start();
+		if(session_id() == '')
+			session_start(); //only call if session doesn't already exist
 		$database = new Database();
 		if(!isset($_SESSION['id'])){
 			$results = $database->query("INSERT INTO users
@@ -260,7 +264,7 @@ Class User{
 		if(strlen($username) > 20)
 			return -2; //too long
 		
-		$username = mysql_real_escape_string($username);
+		$username = $database->real_escape_string($username);
 		if(preg_match('/^[A-Za-z0-9_-]+$/', $username) == 0) //length doesn't matter because it was already checked for
 			return -3; //improperly formatted
 		
@@ -278,5 +282,25 @@ Class User{
 		return 1;
 	}
 
+	public function voteForPostId($id){
+		if(self::$votes === null){
+			//Populate array
+			self::$votes = array();
+			
+			$database = new Database();
+			$result = $database->query("SELECT content_id, value FROM votes
+										WHERE user_id=".$this->id."
+										AND is_post_vote=1");
+			while($row = $result->fetch_object()){
+				self::$votes[$row->content_id] = $row->value;
+			}
+		}
+		
+		if(array_key_exists($id, self::$votes))
+			return self::$votes[$id];
+		else
+			return -1;
+		
+	}
 }
 ?>

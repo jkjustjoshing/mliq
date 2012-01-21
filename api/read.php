@@ -8,6 +8,7 @@
 			to=10   //this from and to combo would be page 1 with 10 posts
 			
 			id=1242 //this gets post id number 1242
+			user=joshiek1990 //get posts from user 'joshiek1990'
 			
 */
 	
@@ -21,6 +22,16 @@
 	
 	}else if (isset($_GET['time'])){
 		$xml = new XML();
+		$xml->addUser($user);
+		$xml->sendHeaders();
+		$xml->sendXML();
+	}else if (isset($_GET['user'])){
+		$xml = new XML();
+	
+		$database = new Database();
+		$posts = $database->getPosts($_GET['user']);
+		
+		$xml->addPosts($posts);
 		$xml->addUser($user);
 		$xml->sendHeaders();
 		$xml->sendXML();
@@ -38,8 +49,6 @@
 			$id = intval($_GET['id'], 10);
 			$id = $id > -1  ? $id : -1;
 		}
-
-		$user = new User();
 		
 		$database = new Database();
 		if(isset($_GET['id']))

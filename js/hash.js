@@ -18,6 +18,7 @@ function Hash(pageViewArg){
 	var hashData;
 	var pageView = pageViewArg;
 	var hashHistory = [];
+	var titlePrefix = "MLIQ";
 	
 	this.hashUpdate = function(){
 		//called on every hash change
@@ -27,14 +28,19 @@ function Hash(pageViewArg){
 		if(!hashData)
 			return; //hash was changed - cancel because hash function will re-fire
 
-		selectCommand();
-		
+		selectCommand();		
 	}
 	
 	this.back = function(){
-		if(hashHistory.length > 1)
-			window.location.hash = hashHistory[hashHistory.length-2];
+		if(hashHistory.length > 1){
+			hashHistory.pop();
+			window.location.hash = hashHistory[hashHistory.length-1];
+		}else{
+			hashHistory.pop();
+			window.location.hash = '#/';
+		}
 	}
+	
 	
 	var parseHash = function(){
 		//if the first slash was forgotten, add it
@@ -51,43 +57,66 @@ function Hash(pageViewArg){
 			hashData[1] = '1';
 		}
 		
+		for(var i = 0; i < hashData.length; i++){
+			if(hashData[i] == ''){
+				hashData[i] = undefined;
+			}
+		}
+		
 		return hashData;
 	}
 
 	
 	var selectCommand = function(){
 		var returnVal;
-		
+		var title = titlePrefix + ' - ';
 		//reset page
-		if(hashData[0] != 'login')
-			login('hide')
-		
+		pageView.clearPage(hashData[0]);
 		
 		//do stuff with the data
 		switch(hashData[0]){
 			case 'post':
 				returnVal = post();
+				title += 'Post number ' + hashData[1];
 				break;
 			case 'page':
 				returnVal = page();
+				title += 'Main Pitch, page ' + hashData[1];
 				break;
 			case 'random':
 				returnVal = random();
 				break;
 			case 'user':
 				returnVal = user();
+				title += hashData[1];
 				break;
 			case 'login':
 				returnVal = login();
+				title += 'Login';
+				break;
+			case 'createNewAccount':
+				returnVal = createAccount();
+				title += 'Create a New Account';
+				break;
+			case 'createPost':
+				returnVal = newPost();
+				title += 'Write a Post';
+				break;
+			case 'about':
+				returnVal = about();
+				title += 'About Us';
 				break;
 			default:
 				//page type wasn't found
 				//bring home
-				window.location.hash = '#/';
 				returnVal = false;
 		}
 		
-		if(returnVal === false){}
+		if(returnVal === false){
+			alert('404');
+		}else{
+			$('title').text(title);
+		}
 			//404?
 			
 		return returnVal;
@@ -95,17 +124,13 @@ function Hash(pageViewArg){
 	}
 		
 	var post = function(hide){
-		if(hide !== undefined){
+		if(hashData[2] !== undefined)
+			return false;
+		if(!validatePositiveNumber(hashData[1]))
+			return false;
 		
-		} else {
-			if(hashData[2] !== undefined)
-				return false;
-			if(!validatePositiveNumber(hashData[1]))
-				return false;
-			
-			//safe, go to post page for this ID
-			pageView.updateId(hashData[1]);
-		}
+		//safe, go to post page for this ID
+		pageView.showId(hashData[1]);
 	}
 	
 	
@@ -118,26 +143,16 @@ function Hash(pageViewArg){
 			return false;
 
 		//safe, go to proper page
-		pageView.updatePage(hashData[1]);
+		pageView.showPage(hashData[1]);
 	
 	}
 	
 	var login = function(hide){
-		if(hide !== undefined){
-			window.user.loginWindow('hide');
-		} else {
-			if(hashData[1] !== undefined)
-				return false;
-			/*
-				if the page is just loading, let the User()
-				object show it
-			*/
-			if(!window.user.isLoggedIn()){
-				window.user.loginWindow('show');
-			}else{
-				window.location.hash = '#/user/'+window.user.getUsername();
-			}	
-		}
+		
+		if(hashData[2] !== undefined)
+			return false;
+		
+		pageView.showLogin('show', hashData[1]);
 	}
 	
 	
@@ -152,6 +167,7 @@ function Hash(pageViewArg){
 		if(hashData[2] !== undefined)
 			return false;
 	
+		pageView.showUser("show", hashData[1]);
 	}
 
 
@@ -173,7 +189,27 @@ function Hash(pageViewArg){
 		}
 	
 	}
+	
+	
+	var createAccount = function(){
+		if(hashData[1] !== undefined)
+			return false;
+		
+		pageView.createNewAccount();
+	}
 
-
+	var newPost = function(){
+		if(hashData[1] !== undefined)
+			return false;
+		
+		pageView.showCreatePost();
+	}
+	
+	var about = function(){
+		if(hashData[1] !== undefined)
+			return false;
+		
+		pageView.showAbout();
+	}
 	
 }

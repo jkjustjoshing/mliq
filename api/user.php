@@ -26,15 +26,15 @@
 
 	$user = new User();
 	
+	//$user->updatePassword('joshiek1990');
 	if(isset($_GET['valid'])){
 	
 		//test to see if $_GET['username'] is valid username, and if it's in the database
-		echo $valid = $user->validUsername();
+		echo $user->validUsername($_GET['username']);
 			
-		return true;
+		return false;
 		
 	}else if(isset($_GET['login'])){		
-	
 		if(isset($_POST['username']) && isset($_POST['password']) ){
 			if($_POST['username'] != '' & $_POST['password'] != ''){
 				$user->checkCredentials($_POST['username'], $_POST['password']);

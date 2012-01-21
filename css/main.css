@@ -1,9 +1,18 @@
 @import url('main_content.css');
 @import url('paginate.css');
 @import url('header.css');
+@import url('createPost.css');
+@import url('userProfile.css');
 
 body {
-	background: #3C5675; /*rgb(23, 41, 63);/ *#DB7E40;*/
+	/* default background colour, for all layout engines that don't implement gradients */
+	background: #003366;
+	/* gecko based browsers */
+	background: -moz-linear-gradient(top, #003366, #172968);
+	/* webkit based browsers */
+	background: -webkit-gradient(linear, left top, left bottom, from(#06427D), to(#172968));
+	background-repeat: none;
+	min-height:100%;
 }
 
 #load_new_posts{
@@ -35,24 +44,14 @@ a:hover {
 	left:0;
 	margin:0;
 	padding:3px 10px;
-	background:#261E1E;
+	background:#EF8D00;
 	color:white;
+	display:none;
 }
 
 #new_post {
 	font-size:13pt;
 	padding:3px 15px;
-}
-
-textarea {
-	-moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -khtml-border-radius: 5px;
-    background:#C2816B;
-    border-width:0;
-	height:100px;
-	width: 90%;
-	margin:8px 8px;
 }
 
 .button{
@@ -86,4 +85,14 @@ label {
 
 #login_username, #login_password {
 	float:left;
+}
+
+.blackoutDiv {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	opacity: 0.7;
+	background: black;
 }

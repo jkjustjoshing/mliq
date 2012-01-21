@@ -5,8 +5,14 @@
 	left:0px;
 	top:0px;
 	width:100%;
-	background:black;
+	background:#D0A33E;
+	background: -moz-linear-gradient(top, #9A7319, orange);
+	background: -webkit-gradient(linear, left top, left bottom, from(#3D3D3D), to(#3D3D3D));
+}
 
+#header a {
+	color: rgb(251, 128, 9); /*#E2DDB5;*/
+	font-family:Helvetica, Arial, sans-serif;
 }
 
 #globalNav {
@@ -18,11 +24,10 @@
 #globalNav li {
 	display:block;
 	float:left;
-	padding:2px 20px;
-	width:100px;
+	padding:2px 50px;
 }
 
-#loginWindow form, #user div {
+#loginWindow form, #userDropdown {
 	margin-top:0px;
 	padding:10px;
 	background:black;
@@ -41,9 +46,4 @@
 	display:inline;
 	float:right;
 	display:none;
-}
-
-.error_message {
-	color:red;
-	opacity:0;
 }

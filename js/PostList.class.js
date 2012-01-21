@@ -17,27 +17,38 @@ function PostList(postsPerPageArg){
 	
 	//postsPerPage optional - defaults to 10
 	this.getPosts = function(pageNumber){ 
-		if(pageNumber <= 0)
-			pageNumber = 1;
-			
-		var from = (pageNumber-1) * postsPerPage;
-		var to = from + postsPerPage;
-
-
-		postAjax(to, from, 0);
-		
+		if(typeof pageNumber == 'string'){
+			var user = pageNumber;
+			postAjax(user);
+		} else {
+			if(pageNumber <= 0)
+				pageNumber = 1;
+				
+			var from = (pageNumber-1) * postsPerPage;
+			var to = from + postsPerPage;
+	
+	
+			postAjax(to, from, 0);
+		}
 	}
 	
 	var postAjax = function(to, from, id){
 		//remove previous posts
 		posts.length = 0;
+		if(typeof to == 'string'){
+			var user = to;
+		}
 		
-		var data = new Object();
-		if(to == 0 && from == 0)
-			data = {id:id};
-		else if(id == 0)
-			data = {to:to,from:from};
-
+		var data;
+		if(typeof to != 'string'){
+			if(to === 0 && from === 0)
+				data = {id:id};
+			else if(id === 0)
+				data = {to:to,from:from};
+		} else {
+			data = {user: user};
+		}
+		
 		$.ajax({
 			type: 'get',
 			async: true,

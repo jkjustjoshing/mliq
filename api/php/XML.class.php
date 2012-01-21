@@ -4,6 +4,7 @@
 * Data will be passed into it. Once all the data is put in, getXML()
 * will be called to get the formatted XML for that collection of data
 */
+require_once('required_files.php');
 
 
 Class XML{
@@ -13,12 +14,21 @@ Class XML{
 	private $user; //Variable that holds the logged in user
 	private $error = array(); //Array that holds the error code and the message
 	private $sentXMLheader = false; //Test to see if XML version and header were sent
+	private $wantVotes = false;
+	
+	function __construct(){
+		$this->user = new User();
+	}
 	
 	public function sendHeaders(){
 		if(!$this->sentXMLheader){
 			header("Content-type: application/xml");
 			echo '<?xml version="1.0" ?>';
 		}
+	}
+	
+	public function wantVotes($bool){
+		$this->wantVotes = $bool;
 	}
 	
 	//Add a post to the postArr array
@@ -51,15 +61,29 @@ Class XML{
 	private function postXML(){
 		$temp = '';
 		foreach($this->postArr as $post){
-			$temp .= '<post id="'.$post->getId().'" time="'.$post->getTime().'">';
-			$temp .= '<user>'.$post->getUsername().'</user>';
-			$temp .= '<content>'.$post->getContent().'</content>';
+			if(method_exists($post, 'getId')){
+				$temp .= '<post id="'.$post->getId().'" time="'.$post->getTime().'">';
+				$temp .= '<user>'.$post->getUsername().'</user>';
+				$temp .= '<content>'.$post->getContent().'</content>';
+				$temp .= '<votes up="'.$post->getVoteUp().'" down="'.$post->getVoteDown().'"';
+				if($post->getUserVote() != -1)
+					$temp .= ' currentUser="'.($post->getUserVote() ? 'up' : 'down').'"';
+				$temp .= ' />';
+				$temp .= $this->commentXML($post);
+				$temp .= '</post>';
+			}
+		}
+		
+		return $temp;
+	}
+		
+	private function voteXML(){
+		$temp = '';
+		foreach($this->postArr as $post){
 			$temp .= '<votes up="'.$post->getVoteUp().'" down="'.$post->getVoteDown().'"';
 			if($post->getUserVote() != -1)
 				$temp .= ' currentUser="'.($post->getUserVote() ? 'up' : 'down').'"';
 			$temp .= ' />';
-			$temp .= $this->commentXML($post);
-			$temp .= '</post>';
 		}
 		
 		return $temp;
@@ -109,7 +133,10 @@ Class XML{
 		$temp .= '<mliq timestamp="'.time().'">';
 		$temp .= $this->errorXML();
 		$temp .= $this->userXML();
-		$temp .= $this->postXML();
+		if($this->wantVotes)
+			$temp .= $this->voteXML();
+		else
+			$temp .= $this->postXML();
 		$temp .= '</mliq>';
 		
 		echo $temp;

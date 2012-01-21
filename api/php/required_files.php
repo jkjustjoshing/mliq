@@ -7,5 +7,6 @@
 	require_once("XML.class.php");
 	require_once("User.class.php");
 	require_once("Session.class.php");
+	require_once("recaptchalib.php");
 
 ?>

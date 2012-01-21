@@ -1,5 +1,7 @@
 <?php
 
+require_once('User.class.php');
+
 Class Post{
 	private $id;
 	private $username;
@@ -9,12 +11,18 @@ Class Post{
 	private $voteDown;
 	private $userVote;
 	private $comments = array();
+	static $loggedInUser = null;
+	
 	
 	public function __construct($id = 0, $time = 0, $content = ''){
 		$this->id = $id;
 		$this->time = $time;
 		$this->content = $content;
-		$this->userVote = -1;
+		
+		if(is_null(self::$loggedInUser)){
+			self::$loggedInUser = new User();
+		}
+		$this->userVote = self::$loggedInUser->voteForPostId($id);
 	}
 	
 	public function getId(){
